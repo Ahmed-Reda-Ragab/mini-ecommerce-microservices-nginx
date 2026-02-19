@@ -17,7 +17,7 @@ This project simulates a real-world e-commerce system where backend services are
 
 ### Architecture Diagram
 
-```mermaid
+```
 graph TD
     Client[Client Browser] -->|HTTP:80| NGINX[NGINX Gateway & LB]
     
@@ -27,8 +27,6 @@ graph TD
     NGINX -->|/api/orders| Order[Order Service]
     NGINX -->|/api/notify| Notify[Notification Service]
 ```
-
----
 
 ## 🛠️ How to Run
 
