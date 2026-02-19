@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # ─── API GATEWAY & LOAD BALANCER ─────────────────────────────
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth-service
+      - product-service
+      - order-service
+      - frontend
+      # - notification-service # if this service is not running, the order service will not be able to send notifications but working fine
+
+    networks:
+      - ecommerce-net
+
+  # ─── FRONTEND ────────────────────────────────────────────────
+  frontend:
+    build: ./frontend
+    networks:
+      - ecommerce-net
+    # No ports exposed to host, only internal 80
+
+  # ─── MICROSERVICES ───────────────────────────────────────────
+  
+  auth-service:
+    build: ./auth-service
+    environment:
+      - PORT=3001
+      - JWT_SECRET=dev-secret
+    networks:
+      - ecommerce-net
+
+  product-service:
+    build: ./product-service
+    environment:
+      - PORT=3002
+      - JWT_SECRET=dev-secret
+    networks:
+      - ecommerce-net
+    # Deploy configuration for scaling (optional in compose, useful for swarm)
+    # deploy:
+    #   replicas: 2
+    
+  order-service:
+    build: ./order-service
+    environment:
+      - PORT=3003
+      - JWT_SECRET=dev-secret
+      - NOTIFICATION_SERVICE_URL=http://notification-service:3004
+    depends_on:
+      - notification-service
+    networks:
+      - ecommerce-net
+
+  notification-service:
+    build: ./notification-service
+    environment:
+      - PORT=3004
+    networks:
+      - ecommerce-net
+
+networks:
+  ecommerce-net:
+    driver: bridge
