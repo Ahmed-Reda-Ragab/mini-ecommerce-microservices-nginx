@@ -63,6 +63,12 @@ services:
       - PORT=3004
     networks:
       - ecommerce-net
+  redis:
+    image: redis:8.2.4-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - ecommerce-net
 
 networks:
   ecommerce-net:
