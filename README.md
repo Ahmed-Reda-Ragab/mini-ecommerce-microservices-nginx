@@ -1,6 +1,6 @@
 # Mini E-Commerce Microservices Platform
 
-A production-like microservices architecture demonstration using **Node.js**, **Express**, **Docker**, **NGINX**, and **React**.
+A production-like microservices architecture demonstration using **Node.js**, **Express**, **Docker**, **NGINX**, **React** , **Java** , **Redis** .
 
 ## 🚀 Architecture Overview
 
@@ -14,6 +14,9 @@ This project simulates a real-world e-commerce system where backend services are
 4.  **Product Service**: Manages product catalog. Scalable (Stateful in memory for demo purposes, but designed for horizontal scaling).
 5.  **Order Service**: Handles order placement and retrieves order history. Asynchronously notifies the Notification Service.
 6.  **Notification Service**: Simulates sending emails/SMS for system events (e.g., Order Confirmation).
+7. **Redis**: caching service for performance
+8.  **Cart Service**: add products to cart using redis caching  (Java App)
+
 
 ### Architecture Diagram
 
@@ -26,6 +29,8 @@ graph TD
     NGINX -->|/api/products| Product[Product Service (Scaled x3)]
     NGINX -->|/api/orders| Order[Order Service]
     NGINX -->|/api/notify| Notify[Notification Service]
+    NGINX -->|/api/cart| Cart[Cart Service]
+    
 ```
 
 ## 🛠️ How to Run
