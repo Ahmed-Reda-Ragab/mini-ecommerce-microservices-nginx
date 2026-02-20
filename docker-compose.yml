@@ -12,8 +12,9 @@ services:
       - auth-service
       - product-service
       - order-service
+      - cart-service
       - frontend
-      # - notification-service # if this service is not running, the order service will not be able to send notifications but working fine
+      - notification-service
 
     networks:
       - ecommerce-net
@@ -63,10 +64,28 @@ services:
       - PORT=3004
     networks:
       - ecommerce-net
+
   redis:
     image: redis:8.2.4-alpine
     ports:
       - "6379:6379"
+    networks:
+      - ecommerce-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 1
+
+  cart-service:
+    build: ./cart-service
+    environment:
+      - PORT=3005
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    depends_on:
+      redis:
+        condition: service_healthy
     networks:
       - ecommerce-net
 
